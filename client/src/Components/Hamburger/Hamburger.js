@@ -8,7 +8,7 @@ const Hamburger = ({headerHidden, setHeaderHidden, tooSmall}) => {
         tooSmall ? setDisplay("block") : setDisplay("none");
     }, [tooSmall])
     return tooSmall ? (
-        <div className="Hamburger" style={{visibility: "visible", tooSmall, left: headerHidden ? "20vw" : ""}}>
+        <div className="Hamburger" style={{visibility: "visible", tooSmall, left: headerHidden ? "23vw" : ""}}>
             <button className="hamburgerButton" onClick={() => {setHeaderHidden(!headerHidden)}}>
                 <div className="hamburgerLine"></div>
                 <div className="hamburgerLine"></div>
