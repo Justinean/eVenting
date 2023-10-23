@@ -1,15 +1,18 @@
 const express = require("express");
+const path = require('path');
 require("dotenv").config();
 const mongoose = require("mongoose");
+const {User} = require("../server/models/index.js");
 
 const app = express();
 
 const port = process.env.PORT || 3001;
 
-mongoose.connect(process.env.MONGODBURI, {
+mongoose.connect(process.env.MONGODBURI || "mongodb://127.0.0.1:27017/eVents", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
+
 
 const db = mongoose.connection;
 
