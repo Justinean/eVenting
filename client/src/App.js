@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './Components/NotFound/NotFound';
 import Home from './Components/Home/Home';
-
+import SignIn from './Components/SignIn/SignIn';
+import exportColors from './Contexts/ColorsContext';
 
 function App() {
   const headerScaleValue = 10;
@@ -26,16 +27,18 @@ function App() {
   window.onresize = checkSize;
   return (
     <div className="App">
-      <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} headerScaleValue={headerScaleValue} />
-      <BrowserRouter>
-        <Routes>
+      <exportColors.ColorsContext.Provider value={exportColors.Colors}>
+        <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} headerScaleValue={headerScaleValue} />
+        <BrowserRouter>
+          <Routes>
             <Route path="/" exact element={<Home />} />
+            <Route path="/SignIn" exact element={<SignIn />} />
             {/*<Route path="/about" element={About} />
             <Route path="/contact" element={Contact} />*/}
             <Route element={<NotFound />} />
-          
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+        </ exportColors.ColorsContext.Provider>
     </div>
   );
 }
