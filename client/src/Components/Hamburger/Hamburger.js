@@ -1,7 +1,7 @@
 import react, { useEffect, useState } from 'react';
 import './Hamburger.css';
 
-const Hamburger = ({headerHidden, setHeaderHidden, tooSmall}) => {
+const Hamburger = ({headerHidden, setHeaderHidden, tooSmall, transition}) => {
     const [display, setDisplay] = useState("none");
     useEffect(() => {
         tooSmall ? setDisplay("block") : setDisplay("none");

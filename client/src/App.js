@@ -12,24 +12,30 @@ import SignUp from './Components/SignUp/SignUp';
 function App() {
   const headerScaleValue = 10;
   const [headerHidden, setHeaderHidden] = useState(false);
-  const [tooSmall, setTooSmall] = useState(true);
-  const [headerWidth, setHeaderWidth] = useState(window.screen.width / headerScaleValue)
+  const [tooSmall, setTooSmall] = useState(false);
+  const [headerWidth, setHeaderWidth] = useState(window.screen.width / headerScaleValue);
+  const [transition, setTransition] = useState("");
   useEffect(() => {
     window.screen.width < 768 ? setTooSmall(true) : setTooSmall(false);
+    tooSmall ? setHeaderHidden(true) : setHeaderHidden(false);
   }, [])
   const checkSize = () => {
+    setTimeout(() => setTransition("all 0.4s ease-in-out"), 100);
+    setTransition("")
     window.screen.width < 768 ? setTooSmall(true) : setTooSmall(false);
-    tooSmall ? setHeaderHidden(false) : setHeaderHidden(true);
-    setHeaderWidth(window.screen.width / headerScaleValue);
+    tooSmall ? setHeaderHidden(true) : setHeaderHidden(false);
+    if (!tooSmall) setHeaderWidth(window.screen.width / headerScaleValue);
     console.log(headerWidth);
   }
+
+
 
 
   window.onresize = checkSize;
   return (
     <div className="App">
       <exportColors.ColorsContext.Provider value={exportColors.Colors}>
-        <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} headerScaleValue={headerScaleValue} />
+        <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} headerScaleValue={headerScaleValue} transition={transition}/>
         <BrowserRouter>
           <Routes>
             <Route path="/" exact element={<Home />} />

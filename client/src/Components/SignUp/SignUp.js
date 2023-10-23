@@ -48,9 +48,8 @@ const SignUp = ({tooSmall}) => {
                 body: JSON.stringify(body)
             });
             const data = await response.json();
-            console.log(data);
-            if (data.error) return setErrorMessage(data.error);
-            window.location.href = "/signin";
+            if (data.errorMessage) return setErrorMessage(data.errorMessage);
+            window.location.href = "/";
         } catch {
             setErrorMessage("An unknown error has occured");
         }
@@ -64,7 +63,7 @@ const SignUp = ({tooSmall}) => {
                 <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
-                <p onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
+                <p className= "HoverPointer" onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
                 <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign In</button><br />
             </div>
@@ -76,7 +75,7 @@ const SignUp = ({tooSmall}) => {
                 <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
-                <p onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
+                <p className= "HoverPointer" onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
                 <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign Up</button><br />
             </div>

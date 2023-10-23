@@ -3,6 +3,7 @@ const path = require('path');
 require("dotenv").config();
 const mongoose = require("mongoose");
 const {User} = require("../server/models/index.js");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
@@ -28,9 +29,27 @@ app.get("/", (req, res) => {
     File.send("../client/public/index.html");
 });
 
-app.post ("/api/users/signup", (req, res) => {
+app.post("/api/users/signup", async (req, res) => {
     console.log(req.body);
-    res.send("Hello");
+    const user = await User.create(req.body);
+    if (!user) return res.json({errorMessage: "An unknown error has occured"});
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    res.json({accessToken: accessToken});
+})
+
+app.post("/api/users/signin", async (req, res) => {
+    const user = await User.findOne({username: req.body.username});
+    if (!user) {
+        user = await User.findOne({email: req.body.username});
+        if (!user) return res.json({errorMessage: "No user found"});
+    }
+
+    const correctpw = User.isCorrectPassword(req.body.password);
+
+    if (!correctpw) return res.json({errorMessage: "Incorrect username or password"});
+
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    res.json({accessToken: accessToken});
 })
 
 db.once('open', () => {
