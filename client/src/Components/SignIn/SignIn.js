@@ -1,4 +1,4 @@
-import react, { useContext, useState } from 'react';
+import react, { useContext, useRef, useState } from 'react';
 import './SignIn.css';
 import exportColors from '../../Contexts/ColorsContext';
 
@@ -34,6 +34,7 @@ const SignIn = ({tooSmall}) => {
         const body = {username: usernameText, password: passwordText};
 
         try {
+            setErrorMessage("");
             const response = await fetch("/api/users/signin", 
             {
                 method: "POST",
@@ -42,13 +43,20 @@ const SignIn = ({tooSmall}) => {
             });
             const data = await response.json();
             if (data.errorMessage) return setErrorMessage(data.errorMessage);
+            localStorage.setItem("accessToken", data.accessToken);
+            document.removeEventListener("keydown", eventListener);
             window.location.href = "/";
         } catch {
             setErrorMessage("An unknown error has occured");
         }
-
     }
 
+    const eventListener = document.addEventListener("keydown", (e => {
+        if (e.key === "Enter") {
+            signIn();
+        };
+    }))
+    
     return tooSmall ? (
         <div className="SignIn" >
             <h1>Sign In</h1>

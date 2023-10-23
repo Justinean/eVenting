@@ -6,18 +6,23 @@ const userSchema = new Schema(
         username: {
             type: String,
             required: true,
-            unique: true,
+            unique: false,
+            caseSensitive: false
         },
         email: {
             type: String,
             required: true,
             unique: true,
             match: [/.+@.+\..+/, 'Must use a valid email address'],
+            caseSensitive: false
         },
         password: {
             type: String,
             required: true,
         },
+        id: {
+            type: String,
+        }
     },
     {
         toJSON: {
@@ -31,6 +36,9 @@ userSchema.pre('save', async function (next) {
     if (this.isNew || this.isModified('password')) {
         const saltRounds = 10;
         this.password = await bcrypt.hash(this.password, saltRounds);
+        if (this.id.length < 4) {
+            this.id = this.id.padStart(4, "1");
+        }
     }
 
     next();

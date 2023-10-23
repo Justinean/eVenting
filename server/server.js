@@ -2,8 +2,9 @@ const express = require("express");
 const path = require('path');
 require("dotenv").config();
 const mongoose = require("mongoose");
-const {User} = require("../server/models/index.js");
+const { User } = require("../server/models");
 const jwt = require("jsonwebtoken");
+const expiration = "2h";
 
 const app = express();
 
@@ -30,26 +31,52 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/users/signup", async (req, res) => {
-    console.log(req.body);
-    const user = await User.create(req.body);
-    if (!user) return res.json({errorMessage: "An unknown error has occured"});
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    res.json({accessToken: accessToken});
+    try {
+        const users = await User.find({username: req.body.username});
+        let id = 1111;
+        console.log("entering loop " + id);
+        while (users.find((user) => user.id === (id).toString())) {
+            id++;
+        }
+        console.log("exiting loop "+ id);
+
+        if (users.length + 1 > 9999) return res.json({errorMessage: "Username is already taken"});
+
+        const user = await User.create({...req.body, id: id.toString()});
+        if (!user) return res.json({errorMessage: "Could not create user"});
+        console.log(user);
+
+        const payload = {username: user.username, id: user.id};
+        const accessToken = jwt.sign({data: payload}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: expiration});
+        res.json({accessToken: accessToken});
+    } catch (err) {
+        console.error(err)
+        return res.json({errorMessage: "An unknown error has occured"});
+    }
 })
 
 app.post("/api/users/signin", async (req, res) => {
-    const user = await User.findOne({username: req.body.username});
-    if (!user) {
-        user = await User.findOne({email: req.body.username});
-        if (!user) return res.json({errorMessage: "No user found"});
+    try {
+        let user;
+        if (req.body.username.split("#").length > 1) {
+            user = await User.findOne({username: req.body.username.split("#")[0], id: req.body.username.split("#")[1]});
+        } else {
+            user = await User.findOne({email: req.body.username});
+        }
+        if (!user) {
+            return res.json({errorMessage: "No user found"});
+        }
+        const correctpw = user.isCorrectPassword(req.body.password);
+        if (!correctpw) return res.json({errorMessage: "Incorrect username or password"});
+    
+        const payload = {username: user.username, id: user.id.toString()};
+        const accessToken = jwt.sign({data: payload}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: expiration});
+    
+        res.json({accessToken: accessToken});
+    } catch (err) {
+        console.error(err)
+        res.json({errorMessage: "An unknown error has occured"});
     }
-
-    const correctpw = User.isCorrectPassword(req.body.password);
-
-    if (!correctpw) return res.json({errorMessage: "Incorrect username or password"});
-
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-    res.json({accessToken: accessToken});
 })
 
 db.once('open', () => {
