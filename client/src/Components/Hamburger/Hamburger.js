@@ -1,14 +1,13 @@
 import react, { useEffect, useState } from 'react';
 import './Hamburger.css';
 
-
 const Hamburger = ({headerHidden, setHeaderHidden, tooSmall}) => {
     const [display, setDisplay] = useState("none");
     useEffect(() => {
         tooSmall ? setDisplay("block") : setDisplay("none");
     }, [tooSmall])
     return tooSmall ? (
-        <div className="Hamburger" style={{visibility: "visible", tooSmall, left: headerHidden ? "23vw" : ""}}>
+        <div className="Hamburger" style={{visibility: "visible", tooSmall, top: headerHidden ? "35vw" : ""}}>
             <button className="hamburgerButton" onClick={() => {setHeaderHidden(!headerHidden)}}>
                 <div className="hamburgerLine"></div>
                 <div className="hamburgerLine"></div>

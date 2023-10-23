@@ -7,6 +7,7 @@ import NotFound from './Components/NotFound/NotFound';
 import Home from './Components/Home/Home';
 import SignIn from './Components/SignIn/SignIn';
 import exportColors from './Contexts/ColorsContext';
+import SignUp from './Components/SignUp/SignUp';
 
 function App() {
   const headerScaleValue = 10;
@@ -32,7 +33,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" exact element={<Home />} />
-            <Route path="/SignIn" exact element={<SignIn />} />
+            <Route path="/signin" exact element={<SignIn tooSmall={tooSmall}/>} />
+            <Route path="/signup" exact element={<SignUp tooSmall={tooSmall}/>} />
             {/*<Route path="/about" element={About} />
             <Route path="/contact" element={Contact} />*/}
             <Route element={<NotFound />} />
