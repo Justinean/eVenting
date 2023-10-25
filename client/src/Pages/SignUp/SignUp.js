@@ -1,6 +1,7 @@
 import react, { useContext, useState } from 'react';
 import './SignUp.css';
 import exportColors from '../../Contexts/ColorsContext';
+import AUTH from '../../utils/auth';
 
 const SmallStyle = {
     width: "60vw"
@@ -50,9 +51,8 @@ const SignUp = ({tooSmall}) => {
             });
             const data = await response.json();
             if (data.errorMessage) return setErrorMessage(data.errorMessage);
-            localStorage.setItem("accessToken", data.accessToken);
             document.removeEventListener("keydown", eventListener);
-            window.location.href = "/";
+            AUTH.login(data.accessToken);
         } catch {
             setErrorMessage("An unknown error has occured");
         }
@@ -71,7 +71,7 @@ const SignUp = ({tooSmall}) => {
                 <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
-                <p className= "HoverPointer" onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
+                <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
                 <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign In</button><br />
             </div>
@@ -83,7 +83,7 @@ const SignUp = ({tooSmall}) => {
                 <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
                 <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
-                <p className= "HoverPointer" onClick={() => window.location.href = "/signin"}>Sign In Instead</p>
+                <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
                 <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign Up</button><br />
             </div>
