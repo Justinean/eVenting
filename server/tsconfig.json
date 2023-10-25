@@ -5,10 +5,10 @@
         "composite": true,
         "rootDir": "./src",
         "strict": true,
-        "typeRoots": ["./types"],
-        "types": ["index"],
+        "typeRoots": ["types"],
         "moduleResolution": "node"
     },
+    "files": ["./types/index.d.ts"],
     "include": ["./src/*.ts/", "./src/**/*.ts"],
     "references": [
         {

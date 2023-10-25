@@ -33,7 +33,7 @@ app.post("/api/users/signup", async (req: Request, res: Response) => {
         const users = await User.find({username: req.body.username});
         let id = 1111;
         console.log("entering loop " + id);
-        while (users.find((user: ModelTypes.UserType) => user.id === (id).toString())) {
+        while (users.find((user: UserType) => user.id === (id).toString())) {
             id++;
         }
         console.log("exiting loop "+ id);

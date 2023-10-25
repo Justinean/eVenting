@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { Schema, model } from "mongoose";
 import { eventSchema } from './Event';
 
-const userSchema = new Schema<ModelTypes.UserType>(
+const userSchema = new Schema<UserType>(
     {
         username: {
             type: String,
@@ -51,6 +51,6 @@ userSchema.methods.isCorrectPassword = async function (password: string) {
     return bcrypt.compare(password, this.password);
 };
 
-const User = model<ModelTypes.UserType>('User', userSchema);
+const User = model<UserType>('User', userSchema);
 
 export default User;

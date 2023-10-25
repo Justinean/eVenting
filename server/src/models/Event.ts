@@ -1,6 +1,6 @@
 import {Schema, model} from 'mongoose';
 
-const eventSchema = new Schema<ModelTypes.EventType>(
+const eventSchema = new Schema<EventType>(
     {
         name: {
             type: String,
@@ -39,6 +39,6 @@ const eventSchema = new Schema<ModelTypes.EventType>(
     }
 );
 
-const EventModel = model<ModelTypes.EventType>('Event', eventSchema);
+const EventModel = model<EventType>('Event', eventSchema);
 
 export {EventModel, eventSchema};
