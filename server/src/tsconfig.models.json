@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.servers.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+        "outDir": "../build",
+    },
+    "include": ["./models/*.ts"]
+}

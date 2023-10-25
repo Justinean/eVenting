@@ -1,0 +1,21 @@
+project-root/
+  ├─ node_modules/
+  ├─ build/
+  │   └─ (compiled output files)
+  ├─ src/ 
+  |   ├─ models/
+  │   │   ├─ Event.ts
+  │   │   ├─ index.ts
+  │   │   └─ User.ts
+  │   ├─ utils/
+  │   │   └─ authMiddleware.ts
+  │   ├─ authServer.ts
+  │   ├─ server.ts
+  |   ├─ tsconfig.servers.json
+  |   ├─ tsconfig.models.json
+  |   └─ tsconfig.utils.json
+  ├─ types/
+  │   └─ index.d.ts
+  ├─ .env
+  ├─ package.json
+  └─ tsconfig.json
