@@ -1,7 +1,8 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import {config as dotconfig} from 'dotenv';
-dotconfig();
+import * as dotenv from 'dotenv';
+dotenv.config();
+console.log(process.env.MONGODBURI);
 import * as mongoose from 'mongoose';
 import { User } from './models';
 import * as jwt from 'jsonwebtoken';

@@ -1,0 +1,48 @@
+.SignIn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.signInForm {
+    border: 2px solid black;
+    width: fit-content;
+    padding: 20px;
+    border-radius: 10px;
+    width: 30vw;
+}
+
+.signInForm input {
+    margin: 10px;
+    padding: 5px;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.signInForm button {
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    color: white;
+    cursor: pointer;
+    width: 60%;
+    font-size: 24px;
+}
+
+.signInForm p {
+    position: relative;
+    margin: 0;
+    text-wrap: nowrap;
+    width: 80%;
+    text-align: left;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+#password {
+    margin-bottom: 5px;
+}

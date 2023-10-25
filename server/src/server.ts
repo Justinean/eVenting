@@ -1,14 +1,15 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import {config as dotconfig} from 'dotenv';
-dotconfig();
+import * as dotenv from 'dotenv';
+dotenv.config();
+console.log(process.env.MONGODBURI);
 import * as mongoose from 'mongoose';
 import { EventModel } from './models';
 import authenticateToken from './utils/authMiddleware';
 import { HydratedDocument } from 'mongoose';
 const app = express();
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 // const connectionOptions = {
 //     useNewUrlParser: true,
