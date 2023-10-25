@@ -1,0 +1,16 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "./",
+    },
+    "include": ["./*.ts"],
+    "references": [
+        {
+            "path": "./tsconfig.utils.json"
+        },
+        {
+            "path": "./tsconfig.models.json"
+        }
+    ]
+}

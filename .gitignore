@@ -1,3 +1,6 @@
+client/
+temp/
+server/build/
 # Logs
 logs
 *.log

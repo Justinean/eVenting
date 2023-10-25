@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "outDir": "./build",
+        "composite": true,
+        "rootDir": "./src",
+        "strict": true,
+        "typeRoots": ["./types"],
+        "types": ["index"],
+        "moduleResolution": "node"
+    },
+    "include": ["./src/*.ts/", "./src/**/*.ts"],
+    "references": [
+        {
+            "path": "./src/tsconfig.servers.json"
+        },
+    ]
+}
