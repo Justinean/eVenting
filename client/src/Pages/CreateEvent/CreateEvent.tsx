@@ -3,6 +3,7 @@ import "./CreateEvent.css"
 import exportColors from '../../Contexts/ColorsContext';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import AUTH from '../../utils/auth';
 
 const CreateEvent = () => {
     const [eventName, setEventName] = useState("");
@@ -30,9 +31,12 @@ const CreateEvent = () => {
         try {
             if (eventName === "" || eventTime === "" || eventLocation === "" || eventDescription === "") return alert("Please fill out all required fields");
             const body = {eventName: eventName, eventTime: eventTime, eventLocation: eventLocation, eventDescription: eventDescription, eventAdditional: eventAdditional, eventDate: eventDate};
-            const response = await fetch("/api/events/register", {
+            const response = await fetch("/api/events/create", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": "BEARER " + AUTH.getToken(),
+                },
                 body: JSON.stringify(body)
             })
             const data = await response.json()

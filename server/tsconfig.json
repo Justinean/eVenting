@@ -8,7 +8,7 @@
         "typeRoots": ["types"],
         "moduleResolution": "node"
     },
-    "files": ["./types/index.d.ts"],
+    "files": ["./types/index.d.ts", "./types/custom.d.ts"],
     "include": ["./src/*.ts/", "./src/**/*.ts"],
     "references": [
         {

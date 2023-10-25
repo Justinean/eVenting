@@ -16,19 +16,32 @@ import { VerifyErrors, verify} from 'jsonwebtoken';
 //     creator: string; 
 //     creatorId: string;
 // }
+interface customObject extends Object {
+    payload?: {
+        data: object;
+        iat: number;
+        exp: number;
+    };
+    signature?: string;
+}
 
 function authenticateToken(req: Request, res: Response, next: NextFunction) {
-    console.log("in auth")
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-    if (token == null) return res.sendStatus(401);
-    verify(token, process.env.ACCESS_TOKEN_SECRET || '', {complete: true}, (err: VerifyErrors | null, user: object | undefined) => {
-        console.log(err);
-        if (err) return res.sendStatus(403);
-        console.log(user);
-        // req.userdata = user;
-        next();
-    })
+    try {
+        console.log("in auth")
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+        if (token == null) return res.sendStatus(401);
+        verify(token, process.env.ACCESS_TOKEN_SECRET || '', {complete: true}, (err: Error | null, tokenData: object | undefined) => {
+            if (err) throw err;
+            if (err || tokenData == null) return res.sendStatus(403);
+            if (tokenData === undefined) return res.sendStatus(403);
+            req.userdata = tokenData as customObject;
+            next();
+        })
+    } catch (err) {
+        console.error(err);
+        return res.sendStatus(403);
+    }
 }
 
 export default authenticateToken;

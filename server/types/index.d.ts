@@ -1,18 +1,10 @@
-// declare global {
-//     namespace Express {
-//         interface Request {
-//             userdata: {
-//                 data: {
-//                     username: string;
-//                     id: string;
-//                     _id: string;
-//                 }
-//             }
-//             body: any
-//         }
-//     }
-// }
-
+type UserData = {
+    data: {
+        username: string;
+        id: string;
+        _id: string;
+    }
+}
 type UserType = {
     username: string;
     email: string;
