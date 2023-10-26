@@ -28,9 +28,6 @@ function App() {
     console.log(headerWidth);
   }
 
-
-
-
   window.onresize = checkSize;
 
   return (

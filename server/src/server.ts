@@ -36,8 +36,18 @@ app.get("/", (req, res) => {
 app.post("/api/events/create", authenticateToken, async (req: Request, res: Response) => {
     console.log("Creating event");
     try {
-        console.log("Creating event");
-        const event: HydratedDocument<EventType> = await EventModel.create({...req.body, creator: (req as any).userdata.data.username, creatorId: (req as any).userdata.data.id});
+        console.log(req.body);
+        const eventDetails = {
+            name: req.body.eventName,
+            time: req.body.eventTime,
+            location: req.body.eventLocation,
+            description: req.body.eventDescription,
+            additional: req.body.eventAdditional,
+            date: req.body.eventDate,
+            creator: req?.userdata?.payload.data.username,
+            creatorId: req?.userdata?.payload.data.id
+        }
+        const event: HydratedDocument<EventType> = await EventModel.create(eventDetails);
         console.log(event);
         if (!event) return res.json({errorMessage: "An unknown error has occured"});
         return res.json(event);

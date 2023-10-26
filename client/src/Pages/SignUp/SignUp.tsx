@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import './SignUp.css';
 import exportColors from '../../Contexts/ColorsContext';
 import AUTH from '../../utils/auth';
@@ -12,14 +12,19 @@ interface SignUpProps {
 }
 
 const SignUp = ({tooSmall}: SignUpProps) => {
-    const Colors = useContext(exportColors.ColorsContext);
-    const [usernameText, setUsernameText] = useState("");
-    const [passwordText, setPasswordText] = useState("");
-    const [emailText, setEmailText] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const errorMessageRef = useRef<HTMLParagraphElement | null>(null)
+    const Colors = useContext<typeof exportColors.Colors>(exportColors.ColorsContext);
+    const [usernameText, setUsernameText] = useState<string>("");
+    const [passwordText, setPasswordText] = useState<string>("");
+    const [emailText, setEmailText] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("A");
     const errorStyle = {
         color: Colors.Pink,
     }
+
+    useEffect(() => {
+        errorMessageRef.current?.classList.add("hiddenClass")
+    }, [])
 
     const changeTextBox = (e: React.ChangeEvent<HTMLInputElement>) => {
         if(e.target.id === "username"){
@@ -31,15 +36,20 @@ const SignUp = ({tooSmall}: SignUpProps) => {
         }
     }
 
+    const setError = (message: string) => {
+        setErrorMessage(message);
+        errorMessageRef.current?.classList.remove("hiddenClass");
+    }
+
     const signUp = async () => {
         setTimeout(() => {
-            setErrorMessage("");
-        }, 3000)
-        if (usernameText === "" || passwordText === "" || emailText === "") return setErrorMessage("Please fill out all fields");
-        if (usernameText.length < 3) return setErrorMessage("Username must be at least 3 characters long");
-        if (passwordText.length < 6) return setErrorMessage("Password must be at least 6 characters long");
-        if (!passwordText.match(/^[A-Z0-9!@#$%^&*():;]+$/i)) return setErrorMessage("Password is not valid");
-        if (!emailText.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) return setErrorMessage("Please enter a valid email address");
+            errorMessageRef.current?.classList.add("hiddenClass");
+        }, 2500)
+        if (usernameText === "" || passwordText === "" || emailText === "") return setError("Please fill out all fields");
+        if (usernameText.length < 3) return setError("Username must be at least 3 characters long");
+        if (passwordText.length < 6) return setError("Password must be at least 6 characters long");
+        if (!passwordText.match(/^[A-Z0-9!@#$%^&*():;]+$/i)) return setError("Password is not valid");
+        if (!emailText.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) return setError("Please enter a valid email address");
         
         const body = {username: usernameText, password: passwordText, email: emailText};
 
@@ -68,24 +78,30 @@ const SignUp = ({tooSmall}: SignUpProps) => {
     return tooSmall ? (
         <div className="SignIn" >
             <h1>Sign Up</h1>
-            <div className="signInForm" style={{...SmallStyle}}>
-                <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
-                <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
-                <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
+            <div className="signInForm signUpForm" style={{...SmallStyle}}>
+                <label>Username</label>
+                <input id="username" type="text" value={usernameText} onChange={e => changeTextBox(e)}></input><br />
+                <label>Email</label>
+                <input id="email" type="text" value={emailText} onChange={e => changeTextBox(e)}></input><br />
+                <label>Password</label>
+                <input id="password" type="password"  value={passwordText} onChange={e => changeTextBox(e)}></input>
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
-                <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
+                <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign In</button><br />
             </div>
         </div>
     ): (
         <div className="SignIn">
             <h1>Sign Up</h1>
-            <div className="signInForm">
-                <input id="username" type="text" placeholder='username' value={usernameText} onChange={e => changeTextBox(e)}></input><br />
-                <input id="email" type="text" placeholder='email' value={emailText} onChange={e => changeTextBox(e)}></input><br />
-                <input id="password" type="password" placeholder='password' value={passwordText} onChange={e => changeTextBox(e)}></input>
+            <div className="signInForm signUpForm">
+                <label>Username</label>
+                <input id="username" type="text" value={usernameText} onChange={e => changeTextBox(e)}></input><br />
+                <label>Email</label>
+                <input id="email" type="text" value={emailText} onChange={e => changeTextBox(e)}></input><br />
+                <label>Password</label>
+                <input id="password" type="password" value={passwordText} onChange={e => changeTextBox(e)}></input>
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
-                <p className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
+                <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign Up</button><br />
             </div>
         </div>

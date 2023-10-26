@@ -1,0 +1,13 @@
+.signUpForm {
+    height: fit-content;
+}
+
+.signUpForm label {
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .signUpForm {
+        height: fit-content;
+    }
+}

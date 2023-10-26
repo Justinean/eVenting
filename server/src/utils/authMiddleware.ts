@@ -16,14 +16,6 @@ import { VerifyErrors, verify} from 'jsonwebtoken';
 //     creator: string; 
 //     creatorId: string;
 // }
-interface customObject extends Object {
-    payload?: {
-        data: object;
-        iat: number;
-        exp: number;
-    };
-    signature?: string;
-}
 
 function authenticateToken(req: Request, res: Response, next: NextFunction) {
     try {
@@ -35,7 +27,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
             if (err) throw err;
             if (err || tokenData == null) return res.sendStatus(403);
             if (tokenData === undefined) return res.sendStatus(403);
-            req.userdata = tokenData as customObject;
+            req.userdata = tokenData as CustomObject ;
             next();
         })
     } catch (err) {

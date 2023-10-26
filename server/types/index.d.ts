@@ -23,3 +23,15 @@ type EventType = {
     creator?: string;
     creatorId?: string;
 }
+
+interface CustomObject extends Object {
+    payload: {
+        data: {
+            username: string;
+            id: string;
+        };
+        iat: number;
+        exp: number;
+    };
+    signature?: string;
+}
