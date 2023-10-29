@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import "./CreateEvent.css"
-import exportColors from '../../Contexts/ColorsContext';
+import { ColorsContext } from '../../Contexts';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import AUTH from '../../utils/auth';
 
 const CreateEvent = () => {
+    const Colors = useContext(ColorsContext);
     const [eventName, setEventName] = useState("");
     const [eventTime, setEventTime] = useState("");
     const [eventLocation, setEventLocation] = useState("");
     const [eventDescription, setEventDescription] = useState("");
     const [eventAdditional, setEventAdditional] = useState("");
     const [eventDate, setEventDate] = useState(new Date());
+
+    useEffect(() => {
+        document.title = "Create Event - eVenting";
+    }, [])
 
     const changeTextBox = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if(e.target.id === "eventName"){
@@ -67,7 +72,7 @@ const CreateEvent = () => {
                     <label>Additional Information</label>
                     <textarea className="eventInput" id="eventAdditional" onChange={changeTextBox} value={eventAdditional}></textarea><br />
                     <label id="requiredLabel">* means field is required</label><br />
-                    <button className="registerButton HoverPointer" id="eventName" style={{backgroundColor: exportColors.Colors.Green}} onClick={registerEvent}>Create Event</button>
+                    <button className="registerButton HoverPointer" id="eventName" style={{backgroundColor: Colors.Green}} onClick={registerEvent}>Create Event</button>
                 </form>
             </div>
         </div>

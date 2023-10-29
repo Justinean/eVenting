@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import './SignIn.css';
-import exportColors from '../../Contexts/ColorsContext';
+import { ColorsContext } from '../../Contexts';
 import AUTH from '../../utils/auth';
 
 const SmallStyle = {
@@ -13,11 +13,12 @@ interface SignInProps {
 
 const SignIn = ({tooSmall}: SignInProps) => {
     const errorMessageRef = useRef<HTMLParagraphElement | null>(null)
-    const Colors = useContext<typeof exportColors.Colors>(exportColors.ColorsContext);
+    const Colors = useContext(ColorsContext);
     const [usernameText, setUsernameText] = useState<string>("");
     const [passwordText, setPasswordText] = useState<string>("");
     const [errorMessage, setErrorMessage] = useState<string>("A");
     useEffect(() => {
+        document.title = "Sign In - eVenting"
         errorMessageRef.current?.classList.add("hiddenClass")
     }, [])
     const errorStyle = {
@@ -47,7 +48,7 @@ const SignIn = ({tooSmall}: SignInProps) => {
 
         try {
             setErrorMessage("");
-            const response = await fetch("/api/users/signin", 
+            const response = await fetch("/api/auth/signin", 
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
@@ -55,7 +56,7 @@ const SignIn = ({tooSmall}: SignInProps) => {
             });
             const data = await response.json();
             if (data.errorMessage) return setErrorMessage(data.errorMessage);
-            AUTH.login(data.accessToken);
+            AUTH.login(data.accessToken, data.refreshToken);
         } catch {
             setErrorMessage("An unknown error has occured");
         }

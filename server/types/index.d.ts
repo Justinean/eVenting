@@ -1,18 +1,35 @@
+/// <reference types="mongoose" />
+
 type UserData = {
-    data: {
-        username: string;
-        id: string;
-        _id: string;
-    }
+    username: string;
+    id: string;
+    _id: string;
 }
+
+interface Token extends Object {
+    header: {
+        alg: string;
+        typ: string;
+    };
+    payload: {
+        data: UserData;
+        iat: number;
+        exp: number;
+    };
+    signature?: string;
+}
+
 type UserType = {
     username: string;
     email: string;
     password: string;
+    bio?: string;
     id: string;
     followedEvents: [EventType];
+    profilePicture?: string;
     isCorrectPassword: (password: string) => Promise<boolean>;
 }
+
 type EventType = {
     name: string;
     date: Date;
@@ -20,18 +37,8 @@ type EventType = {
     location: string;
     description: string;
     additional?: string;
-    creator?: string;
-    creatorId?: string;
 }
 
-interface CustomObject extends Object {
-    payload: {
-        data: {
-            username: string;
-            id: string;
-        };
-        iat: number;
-        exp: number;
-    };
-    signature?: string;
+type TokenType = {
+    token: string;
 }

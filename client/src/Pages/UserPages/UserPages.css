@@ -1,0 +1,14 @@
+.tabContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 80vw;
+}
+
+@media screen and (min-width: 768px) {
+    .tabContainer {
+        padding-left: 15vw;
+        padding-right: 10vw;
+    }
+}

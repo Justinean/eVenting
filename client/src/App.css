@@ -39,4 +39,5 @@
 
 .HoverPointer {
   cursor: pointer;
+  user-select: none;
 }

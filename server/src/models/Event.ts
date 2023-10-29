@@ -1,6 +1,10 @@
 import {Schema, model} from 'mongoose';
 
-const eventSchema = new Schema<EventType>(
+interface BetterEventType extends EventType {
+    creator: Schema.Types.ObjectId;
+}
+
+const eventSchema = new Schema<BetterEventType>(
     {
         name: {
             type: String,
@@ -26,10 +30,9 @@ const eventSchema = new Schema<EventType>(
             type: String,
         },
         creator: {
-            type: String,
-        },
-        creatorId: {
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
         },
     },
     {
@@ -39,6 +42,6 @@ const eventSchema = new Schema<EventType>(
     }
 );
 
-const EventModel = model<EventType>('Event', eventSchema);
+const EventModel = model<BetterEventType>('Event', eventSchema);
 
 export {EventModel, eventSchema};

@@ -5,26 +5,29 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './Pages/NotFound/NotFound';
 import Home from './Pages/Home/Home';
 import SignIn from './Pages/SignIn/SignIn';
-import exportColors from './Contexts/ColorsContext';
+import { Colors } from './Contexts/ColorsContext';
+import { SmallStyle } from './Contexts/SmallStyleContext';
+import { ColorsContext, SmallStyleContext } from './Contexts';
 import SignUp from './Pages/SignUp/SignUp';
 import CreateEvent from './Pages/CreateEvent/CreateEvent';
+import UserPages from './Pages/UserPages/UserPages';
 
 function App() {
-  const headerScaleValue = 10;
+  const headerScaleValue = .1;
   const [headerHidden, setHeaderHidden] = useState(false);
   const [tooSmall, setTooSmall] = useState(false);
-  const [headerWidth, setHeaderWidth] = useState(window.screen.width / headerScaleValue);
+  const [headerWidth, setHeaderWidth] = useState(window.innerWidth * headerScaleValue);
   const [transition, setTransition] = useState("");
   useEffect(() => {
-    window.screen.width < 768 ? setTooSmall(true) : setTooSmall(false);
+    window.innerWidth < 768 ? setTooSmall(true) : setTooSmall(false);
     tooSmall ? setHeaderHidden(true) : setHeaderHidden(false);
   }, [tooSmall])
   const checkSize = () => {
     setTimeout(() => setTransition("all 0.4s ease-in-out"), 100);
     setTransition("")
-    window.screen.width < 768 ? setTooSmall(true) : setTooSmall(false);
+    window.innerWidth < 768 ? setTooSmall(true) : setTooSmall(false);
     tooSmall ? setHeaderHidden(true) : setHeaderHidden(false);
-    if (!tooSmall) setHeaderWidth(window.screen.width / headerScaleValue);
+    if (!tooSmall) setHeaderWidth(window.innerWidth * headerScaleValue);
     console.log(headerWidth);
   }
 
@@ -32,20 +35,23 @@ function App() {
 
   return (
     <div className="App">
-      <exportColors.ColorsContext.Provider value={exportColors.Colors}>
-        <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} transition={transition}/>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn tooSmall={tooSmall}/>} />
-            <Route path="/signup" element={<SignUp tooSmall={tooSmall}/>} />
-            <Route path="/createevent" element={<CreateEvent/>} />
-            {/*<Route path="/about" element={About} />
-            <Route path="/contact" element={Contact} />*/}
-            <Route element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        </ exportColors.ColorsContext.Provider>
+      <SmallStyleContext.Provider value={SmallStyle}>
+        <ColorsContext.Provider value={Colors}>
+          <Header headerHidden={headerHidden} setHeaderHidden={setHeaderHidden} tooSmall={tooSmall} headerWidth={headerWidth} transition={transition}/>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signin" element={<SignIn tooSmall={tooSmall}/>} />
+              <Route path="/signup" element={<SignUp tooSmall={tooSmall}/>} />
+              <Route path="/createevent" element={<CreateEvent/>} />
+              <Route path="/user/:id" element={<UserPages tooSmall={tooSmall}/>} />
+              {/*<Route path="/about" element={About} />
+              <Route path="/contact" element={Contact} />*/}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </ ColorsContext.Provider>
+      </ SmallStyleContext.Provider>
     </div>
   )
 }

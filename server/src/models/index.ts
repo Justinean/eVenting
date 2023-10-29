@@ -1,4 +1,5 @@
-import User from './User';
+import { UserModel } from './User';
 import { EventModel } from './Event';
+import { TokenModel } from './Token';
 
-export {User, EventModel};
+export {UserModel, EventModel, TokenModel};

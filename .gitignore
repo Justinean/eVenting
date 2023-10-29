@@ -1,5 +1,5 @@
-server/
-temp/
+build/
+*.txt
 # Logs
 logs
 *.log

@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcrypt';
 import { Schema, model } from "mongoose";
-import { eventSchema } from './Event';
 
 const userSchema = new Schema<UserType>(
     {
@@ -17,6 +16,12 @@ const userSchema = new Schema<UserType>(
             match: [/.+@.+\..+/, 'Must use a valid email address'],
             caseSensitive: false
         },
+        bio: {
+            type: String,
+            required: false,
+            unique: false,
+            caseSensitive: true
+        },
         password: {
             type: String,
             required: true,
@@ -24,7 +29,13 @@ const userSchema = new Schema<UserType>(
         id: {
             type: String,
         },
-        followedEvents: [eventSchema],
+        followedEvents: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'Event'
+        }],
+        profilePicture: {
+            type: String,
+        }
     },
     {
         toJSON: {
@@ -51,6 +62,6 @@ userSchema.methods.isCorrectPassword = async function (password: string) {
     return bcrypt.compare(password, this.password);
 };
 
-const User = model<UserType>('User', userSchema);
+const UserModel = model<UserType>('User', userSchema);
 
-export default User;
+export {UserModel, userSchema};
