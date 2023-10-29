@@ -29,7 +29,6 @@ app.post("/token", async (req: Request, res: Response) => {
         if (refreshToken == null) throw new Error("Token not sent");
         const token = await TokenModel.findOne({token: refreshToken});
         if (!token) throw new Error("Token not found");
-        console.log("refreshed token");
         res.json({accessToken: verifyRefreshToken(refreshToken)});
     } catch (err) {
         console.error(err);

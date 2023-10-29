@@ -43,6 +43,7 @@ app.get("/profiles/:id", async (req: Request, res: Response) => {
             id: userData.id,
             _id: userData._id,
             bio: userData.bio,
+            profilePicture: userData.profilePicture,
             events,
         }
         return res.json(returnData);
@@ -68,9 +69,9 @@ app.put("/profiles/edit", authenticateToken, async (req: Request, res: Response)
 
         if (!req.token?.payload.data._id) throw new Error("User not found");
         if (req.body.username !== req.token?.payload.data.username) {
-            userData = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {username: req.body.username, id, bio: req.body.bio, profilePicture: req.body.profile}, {new: true});
+            userData = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {username: req.body.username, id, bio: req.body.bio, profilePicture: req.body.profilePicture}, {new: true});
         } else {
-            userData = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {username: req.body.username, id, bio: req.body.bio, profilePicture: req.body.profile}, {new: true});
+            userData = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {bio: req.body.bio, profilePicture: req.body.profilePicture}, {new: true});
         }
         if (!userData) throw new Error("User could not be updated");
         const events = await EventModel.find({creator: req.token?.payload.data._id});
@@ -79,6 +80,7 @@ app.put("/profiles/edit", authenticateToken, async (req: Request, res: Response)
             id: userData.id,
             _id: userData._id,
             bio: userData.bio,
+            profilePicture: userData.profilePicture,
             events,
         }
         return res.json(returnData);
