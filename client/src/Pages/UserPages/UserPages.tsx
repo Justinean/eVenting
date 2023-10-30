@@ -3,8 +3,10 @@ import AUTH from "../../utils/auth";
 import "./UserPages.css"
 import FollowedEventsTab from "../../Components/FollowedEventsTab/FollowedEventsTab";
 import CreatedEventsTab from "../../Components/CreatedEventsTab/CreatedEventsTab";
+import PostsTab from "../../Components/PostsTab/PostsTab";
 import { ColorsContext } from "../../Contexts";
 import Profile from "../../Components/Profile/Profile";
+import NotFound from "../NotFound/NotFound";
 
 const UserTabs = [
     "Posts",
@@ -53,10 +55,8 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
     
     const getCurrentTab = () => {
         switch (currentTab) {
-            case "Feed":
-                return <></>
             case "Posts":
-                return <></>
+                return <PostsTab></PostsTab>
             case "Followed Events":
                 return <FollowedEventsTab></ FollowedEventsTab>
             case "Created Events":
@@ -64,7 +64,7 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
             case "Comments":
                 return <></>
             default:
-                return <></>
+                return <NotFound></NotFound>
         }
     }
     return (
@@ -79,7 +79,6 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
                     )
                     )}
                 </div>
-                <h2>{currentTab}</h2>
                 {getCurrentTab()}
             </div>
         )

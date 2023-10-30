@@ -10,7 +10,7 @@ const Home = () => {
     }, [])
     return (
         <div className='Home'>
-            {AUTH.loggedIn() ? <button className="registerEventButton HoverPointer" style={{backgroundColor: Colors.Green}} onClick={() => window.location.assign("/createevent")}>Create an Event</button> : <></>}
+            {AUTH.loggedIn() ? <button className="registerEventButton HoverPointer" style={{backgroundColor: Colors.Green}} onClick={() => window.location.assign("/event/create")}>Create an Event</button> : <></>}
             <h1>Home</h1>
             <input placeholder='Search by Location'></input>
             <br />

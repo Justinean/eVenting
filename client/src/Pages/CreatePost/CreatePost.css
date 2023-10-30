@@ -1,0 +1,73 @@
+.postForm {
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    text-align: left;
+}
+
+.postInput {
+    width: 90%;
+    height: 100px;
+    margin-left: 5%;
+    resize: none;
+    font-size: 20px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.116);
+    padding: 10px;
+}
+
+.CreatePost label {
+    position: relative;
+    top: 120px;
+    left: 90%;
+}
+
+.postImage {
+    display: block;
+    overflow: hidden;
+    max-width: 256px;
+    max-height: 256px;
+}
+
+.removeImageButton {
+    width: 6em;
+    position: relative;
+    display: block;
+    top: 60px;
+    border: 0;
+    border-radius: 50px;
+}
+
+.addImageButton {
+    width: 30%;
+    margin-left: 5%;
+    height: 50px;
+    border-radius: 5px;
+    border: 0px;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.errorMessage {
+    margin-left: 5%;
+}
+
+.postButton {
+    width: 75%;
+    margin-left: 12.5%;
+    height: 50px;
+    border-radius: 5px;
+    border: 0px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.postInput:focus {
+    outline: none;
+}

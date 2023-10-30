@@ -11,6 +11,7 @@ import { ColorsContext, SmallStyleContext } from './Contexts';
 import SignUp from './Pages/SignUp/SignUp';
 import CreateEvent from './Pages/CreateEvent/CreateEvent';
 import UserPages from './Pages/UserPages/UserPages';
+import CreatePost from './Pages/CreatePost/CreatePost';
 
 function App() {
   const headerScaleValue = .1;
@@ -43,7 +44,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/signin" element={<SignIn tooSmall={tooSmall}/>} />
               <Route path="/signup" element={<SignUp tooSmall={tooSmall}/>} />
-              <Route path="/createevent" element={<CreateEvent/>} />
+              <Route path="/event/create" element={<CreateEvent/>} />
+              <Route path="/post/create" element={<CreatePost/>} />
               <Route path="/user/:id" element={<UserPages tooSmall={tooSmall}/>} />
               {/*<Route path="/about" element={About} />
               <Route path="/contact" element={Contact} />*/}

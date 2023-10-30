@@ -3,15 +3,16 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    width: 40vw;
-    margin-left: 30vw;
+    width: 50vw;
+    margin-left: 25vw;
     border: 1px solid #a5d6a7;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
     .tabContainer {
-
+        width: 80vw;
+        margin-left: 10vw;
     }
 }
