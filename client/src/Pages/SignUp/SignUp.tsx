@@ -25,6 +25,7 @@ const SignUp = ({tooSmall}: SignUpProps) => {
     useEffect(() => {
         document.title = "Sign Up - eVenting"
         errorMessageRef.current?.classList.add("hiddenClass")
+        if (AUTH.loggedIn()) window.location.assign("/");
     }, [])
 
     const changeTextBox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,13 +43,15 @@ const SignUp = ({tooSmall}: SignUpProps) => {
         errorMessageRef.current?.classList.remove("hiddenClass");
     }
 
-    const signUp = async () => {
+    const signUp = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setTimeout(() => {
             errorMessageRef.current?.classList.add("hiddenClass");
         }, 2500)
         if (usernameText === "" || passwordText === "" || emailText === "") return setError("Please fill out all fields");
         if (usernameText.length < 3) return setError("Username must be at least 3 characters long");
         if (passwordText.length < 6) return setError("Password must be at least 6 characters long");
+        if (!usernameText.match(/^[A-Z0-9]+$/i)) return setError("Username must be alphanumeric (a-z, 0-9)");
         if (!passwordText.match(/^[A-Z0-9!@#$%^&*():;]+$/i)) return setError("Password is not valid");
         if (!emailText.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i)) return setError("Please enter a valid email address");
         
@@ -65,21 +68,16 @@ const SignUp = ({tooSmall}: SignUpProps) => {
             const data = await response.json();
             if (data.errorMessage) return setErrorMessage(data.errorMessage);
             AUTH.login(data.accessToken, data.refreshToken);
+            window.location.assign("/");
         } catch {
             setErrorMessage("An unknown error has occured");
         }
     }
 
-    document.addEventListener("keydown", (e => {
-        if (e.key === "Enter") {
-            signUp();
-        }
-    }))
-
     return tooSmall ? (
         <div className="SignIn" >
             <h1>Sign Up</h1>
-            <div className="signInForm signUpForm" style={{...SmallStyle}}>
+            <form className="signInForm signUpForm" style={{...SmallStyle}} onSubmit={signUp}>
                 <label>Username</label>
                 <input id="username" type="text" value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <label>Email</label>
@@ -87,14 +85,14 @@ const SignUp = ({tooSmall}: SignUpProps) => {
                 <label>Password</label>
                 <input id="password" type="password"  value={passwordText} onChange={e => changeTextBox(e)}></input>
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
-                <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
-                <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign In</button><br />
-            </div>
+                <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle, whiteSpace: "initial"}}>{errorMessage}</p>
+                <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign Up</button><br />
+            </form>
         </div>
     ): (
         <div className="SignIn">
             <h1>Sign Up</h1>
-            <div className="signInForm signUpForm">
+            <form className="signInForm signUpForm" onSubmit={signUp}>
                 <label>Username</label>
                 <input id="username" type="text" value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <label>Email</label>
@@ -104,7 +102,7 @@ const SignUp = ({tooSmall}: SignUpProps) => {
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signin")}>Sign In Instead</p>
                 <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signUp}>Sign Up</button><br />
-            </div>
+            </form>
         </div>
     )
 }

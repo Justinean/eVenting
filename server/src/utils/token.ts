@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-const expiration = "10s";
+const expiration = "10m";
 import * as jwt from 'jsonwebtoken';
 import { Types } from "mongoose";
 import * as dotenv from 'dotenv';

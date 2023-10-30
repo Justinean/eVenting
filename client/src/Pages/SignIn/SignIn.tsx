@@ -20,6 +20,7 @@ const SignIn = ({tooSmall}: SignInProps) => {
     useEffect(() => {
         document.title = "Sign In - eVenting"
         errorMessageRef.current?.classList.add("hiddenClass")
+        if (AUTH.loggedIn()) window.location.assign("/");
     }, [])
     const errorStyle = {
         color: Colors.Pink,
@@ -38,7 +39,8 @@ const SignIn = ({tooSmall}: SignInProps) => {
         errorMessageRef.current?.classList.remove("hiddenClass");
     }
 
-    const signIn = async () => {
+    const signIn = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         setTimeout(() => {
             errorMessageRef.current?.classList.add("hiddenClass");
         }, 2500)
@@ -57,21 +59,16 @@ const SignIn = ({tooSmall}: SignInProps) => {
             const data = await response.json();
             if (data.errorMessage) return setErrorMessage(data.errorMessage);
             AUTH.login(data.accessToken, data.refreshToken);
+            window.location.assign("/");
         } catch {
             setErrorMessage("An unknown error has occured");
         }
     }
 
-    document.addEventListener("keydown", (e => {
-        if (e.key === "Enter") {
-            signIn();
-        }
-    }))
-    
     return tooSmall ? (
         <div className="SignIn" >
             <h1>Sign In</h1>
-            <div className="signInForm" style={{...SmallStyle}}>
+            <form className="signInForm" style={{...SmallStyle}} onSubmit={signIn}>
                 <label>Email or Username</label>
                 <input id="username" type="text" value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <label>Password</label>
@@ -79,12 +76,12 @@ const SignIn = ({tooSmall}: SignInProps) => {
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signup")}>Sign Up Instead</p>
                 <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signIn}>Sign In</button><br />
-            </div>
+            </form>
         </div>
     ): (
         <div className="SignIn">
             <h1>Sign In</h1>
-            <div className="signInForm">
+            <form className="signInForm" onSubmit={signIn}>
                 <label>Email or Username</label>
                 <input id="username" type="text"value={usernameText} onChange={e => changeTextBox(e)}></input><br />
                 <label>Password</label>
@@ -92,7 +89,7 @@ const SignIn = ({tooSmall}: SignInProps) => {
                 <p className= "HoverPointer" onClick={() => window.location.assign("/signup")}>Sign Up Instead</p>
                 <p ref={errorMessageRef} className="errorMessage" style={{...errorStyle}}>{errorMessage}</p>
                 <button style={{backgroundColor: Colors.Blue}} onClick={signIn}>Sign In</button><br />
-            </div>
+            </form>
         </div>
     )
 }

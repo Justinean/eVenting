@@ -34,6 +34,7 @@ const CreateEvent = () => {
 
     const registerEvent = async () => {
         try {
+            if (AUTH.isTokenExpired() && AUTH.loggedIn()) await AUTH.refreshToken();
             if (eventName === "" || eventTime === "" || eventLocation === "" || eventDescription === "") return alert("Please fill out all required fields");
             const body = {eventName: eventName, eventTime: eventTime, eventLocation: eventLocation, eventDescription: eventDescription, eventAdditional: eventAdditional, eventDate: eventDate};
             const response = await fetch("/api/events/create", {

@@ -2,7 +2,6 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
-console.log(process.env.MONGODBURI);
 import * as mongoose from 'mongoose';
 import { EventModel, UserModel } from './models';
 import { authenticateToken } from './utils/token';
@@ -36,7 +35,7 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/profiles/:id", async (req: Request, res: Response) => {
     try {
         const userData = await UserModel.findOne({_id: req.params.id});
-        if (!userData) return res.json({errorMessage: "User not found"});
+        if (!userData) throw new Error("User not found");
         const events = await EventModel.find({creator: req.params.id});
         const returnData = {
             username: userData.username,
@@ -44,12 +43,14 @@ app.get("/profiles/:id", async (req: Request, res: Response) => {
             _id: userData._id,
             bio: userData.bio,
             profilePicture: userData.profilePicture,
+            followers: userData.followers,
+            following: userData.following,
             events,
         }
         return res.json(returnData);
     } catch (err) {
         console.error(err);
-        return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
+        return res.json({errorMessage: "User not found", errorCode: 404});
     }
 })
 
@@ -81,6 +82,74 @@ app.put("/profiles/edit", authenticateToken, async (req: Request, res: Response)
             _id: userData._id,
             bio: userData.bio,
             profilePicture: userData.profilePicture,
+            followers: userData.followers,
+            following: userData.following,
+            events,
+        }
+        return res.json(returnData);
+    } catch (err) {
+        console.error(err);
+        return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
+    }
+})
+
+app.put("/profile/follow/:id", authenticateToken, async (req: Request, res: Response) => {
+    try {
+        const user = await UserModel.findOne({_id: req.params.id});
+        if (!user) return res.json({errorMessage: "Follow user not found", errorCode: 404});
+        const currentUser = await UserModel.findOne({_id: req.token?.payload.data._id});
+        if (!currentUser) return res.json({errorMessage: "User not found", errorCode: 404});
+        const followers = user.followers;
+        const following = currentUser.following;
+        if (following?.includes(user._id)) {
+            res.json({errorMessage: "User already followed", errorCode: 400});
+        }
+        const updatedUser = await UserModel.findOneAndUpdate({_id: req.params.id}, {followers: [...(followers || []), currentUser]}, {new: true});
+        if (!updatedUser) throw new Error("Follow user could not be updated");
+        const updatedCurrentUser = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {following: [...(following || []), user]}, {new: true});
+        if (!updatedCurrentUser) throw new Error("User could not be updated");
+        const events = await EventModel.find({creator: req.params.id});
+        const returnData = {
+            username: updatedUser.username,
+            id: updatedUser.id,
+            _id: updatedUser._id,
+            bio: updatedUser.bio,
+            profilePicture: updatedUser.profilePicture,
+            followers: updatedUser.followers,
+            following: updatedUser.following,
+            events,
+        }
+        return res.json(returnData);
+    } catch (err) {
+        console.error(err);
+        return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
+    }
+})
+
+app.put("/profile/unfollow/:id", authenticateToken, async (req: Request, res: Response) => {
+    try {
+        const user = await UserModel.findOne({_id: req.params.id});
+        if (!user) return res.json({errorMessage: "Follow user not found", errorCode: 404});
+        const currentUser = await UserModel.findOne({_id: req.token?.payload.data._id});
+        if (!currentUser) return res.json({errorMessage: "User not found", errorCode: 404});
+        const followers = user.followers;
+        const following = currentUser.following;
+        if (!following?.includes(user._id)) {
+            return res.json({errorMessage: "User not followed", errorCode: 400});
+        }
+        const updatedUser = await UserModel.findOneAndUpdate({_id: req.params.id}, {followers: followers?.filter((follower: string) => follower.toString() !== currentUser._id.toString())}, {new: true});
+            if (!updatedUser) throw new Error("Follow user could not be updated");
+        const updatedCurrentUser = await UserModel.findOneAndUpdate({_id: req.token?.payload.data._id}, {following: following?.filter((followedUser: string) => followedUser.toString() !== user._id.toString())}, {new: true});
+            if (!updatedCurrentUser) throw new Error("User could not be updated");
+        const events = await EventModel.find({creator: req.params.id});
+        const returnData = {
+            username: updatedUser.username,
+            id: updatedUser.id,
+            _id: updatedUser._id,
+            bio: updatedUser.bio,
+            profilePicture: updatedUser.profilePicture,
+            followers: updatedUser.followers,
+            following: updatedUser.following,
             events,
         }
         return res.json(returnData);
@@ -91,7 +160,6 @@ app.put("/profiles/edit", authenticateToken, async (req: Request, res: Response)
 })
 
 app.post("/events/create", authenticateToken, async (req: Request, res: Response) => {
-    console.log("Creating event");
     try {
         if (!req.token?.payload.data._id) throw new Error("User not found");
         const eventDetails = {
@@ -105,7 +173,6 @@ app.post("/events/create", authenticateToken, async (req: Request, res: Response
         }
 
         const event: HydratedDocument<EventType> = await EventModel.create(eventDetails);
-        console.log(event);
         if (!event) return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
         return res.json(event);
     } catch (err) {

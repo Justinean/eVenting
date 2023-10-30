@@ -33,6 +33,14 @@ const userSchema = new Schema<UserType>(
             type: Schema.Types.ObjectId, 
             ref: 'Event'
         }],
+        followers: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'User'
+        }],
+        following: [{
+            type: Schema.Types.ObjectId, 
+            ref: 'User'
+        }],
         profilePicture: {
             type: String,
         }

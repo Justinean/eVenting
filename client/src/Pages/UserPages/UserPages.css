@@ -2,13 +2,16 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    width: 80vw;
+    justify-content: space-around;
+    width: 40vw;
+    margin-left: 30vw;
+    border: 1px solid #a5d6a7;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 @media screen and (min-width: 768px) {
     .tabContainer {
-        padding-left: 15vw;
-        padding-right: 10vw;
+
     }
 }

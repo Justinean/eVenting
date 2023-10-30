@@ -7,7 +7,6 @@ import { ColorsContext } from "../../Contexts";
 import Profile from "../../Components/Profile/Profile";
 
 const UserTabs = [
-    "Feed",
     "Posts",
     "Followed Events",
     "Created Events",
@@ -24,19 +23,19 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [currentTab, setCurrentTab] = useState<string>(UserTabs[0]);
     const visitor = document.URL.split("/")[document.URL.split("/").length - 1] === "me" ? false : true;
-
     // const [loadingText, setLoadingText] = useState<string>("Loading...")
     useEffect(() => {
         const fetchData = async () => {
             let id = document.URL.split("/")[document.URL.split("/").length - 1];
             if (id === "me") {
-                if (AUTH.isTokenExpired()) AUTH.refreshToken();
+                if (!AUTH.loggedIn()) window.location.assign("/signin");
+                if (AUTH.isTokenExpired()) await AUTH.refreshToken();
                 id = (AUTH as AuthServiceType).getProfile().data._id;
             }
             const response = await fetch(`/api/profiles/${id}`, {method: "GET"});
             const data = await response.json();
-            console.log(data);
-            if (data.errorMessage && data.errorCode !== 404) {
+            if (data.errorMessage) {
+                console.log(data.errorMessage)
                 alert(data.errorMessage);
                 return window.location.assign("/");
             }
@@ -71,7 +70,7 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
     return (
         loading ? <h1>Loading...</h1> : (
             <div>
-                <Profile profileData={profileData as ProfileData} visitor={visitor} tooSmall={tooSmall}></Profile>
+                <Profile profileData={profileData as ProfileData} visitor={visitor} tooSmall={tooSmall} setProfileData={setProfileData}></Profile>
                 <div className="tabContainer" style={{backgroundColor: Color.Green}}>
                     {UserTabs.map((tab, i) => (
                         <div className="tab HoverPointer" key={i}>

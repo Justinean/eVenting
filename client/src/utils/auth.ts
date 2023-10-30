@@ -1,5 +1,10 @@
 import decode from 'jwt-decode';
 
+interface FetchDataType {
+  accessToken: string;
+  refreshToken?: string;
+}
+
 class AuthService {
   // Obtains user data.
   getProfile() {
@@ -35,19 +40,21 @@ class AuthService {
     return localStorage.getItem('id_token2');
   }
 
-  async refreshToken() {
-    console.log("refreshing token")
-    const response = await fetch("/api/auth/token", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({token: this.getRefreshToken()})
+  refreshToken() {
+    return new Promise<string | null>((resolve, reject) => {
+      fetch("/api/auth/token", {method: "POST", headers: {'Content-Type': 'application/json'}, body: JSON.stringify({token: this.getRefreshToken()})}).then((res: Response) => res.json()).then((data: FetchDataType) => {
+        if (data.accessToken) {
+          this.login(data.accessToken, data.refreshToken);
+          resolve(data.accessToken);
+        } else {
+          reject();
+        }
+      }).catch((err: Error) => {
+        console.error(err);
+        reject();
+      })
     })
-    if (response.status === 403 || response.status === 401) return console.log("Could not refresh token");
-    const data = await response.json();
-    this.login(data.accessToken);
-  }
+  } 
 
   // Logs us in and saves the user token to localStorage.
   login(idToken: string, idToken2?: string) {

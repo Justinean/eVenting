@@ -25,8 +25,11 @@ type UserType = {
     password: string;
     bio?: string;
     id: string;
-    followedEvents: [EventType];
+    followedEvents?: EventType[];
+    followers?: string[];
+    following?: string[];
     profilePicture?: string;
+    _id?: string;
     isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
