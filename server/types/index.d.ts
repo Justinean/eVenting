@@ -42,6 +42,11 @@ type EventType = {
     additional?: string;
 }
 
-type TokenType = {
+interface TokenType {
     token: string;
+}
+
+interface PostType {
+    text: string;
+    images?: string[];
 }

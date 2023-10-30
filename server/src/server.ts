@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import * as mongoose from 'mongoose';
-import { EventModel, UserModel } from './models';
+import { EventModel, UserModel, PostModel } from './models';
 import { authenticateToken } from './utils/token';
 import { HydratedDocument } from 'mongoose';
 const app = express();
@@ -47,7 +47,8 @@ app.get("/profiles/:id", async (req: Request, res: Response) => {
             following: userData.following,
             events,
         }
-        return res.json(returnData);
+        const posts = await PostModel.find({creator: req.params.id});
+        return res.json({returnData, posts});
     } catch (err) {
         console.error(err);
         return res.json({errorMessage: "User not found", errorCode: 404});
@@ -159,6 +160,31 @@ app.put("/profile/unfollow/:id", authenticateToken, async (req: Request, res: Re
     }
 })
 
+app.post("/posts/create", authenticateToken, async (req: Request, res: Response) => {
+    try {
+        if (!req.token?.payload.data._id) throw new Error("User not found");
+        const postDetails: {text: string, content: string, creator: mongoose.ObjectId | string} = {
+            text: req.body.text,
+            content: req.body.postContent,
+            creator: req.token?.payload.data._id,
+        }
+
+        const post = await PostModel.create(postDetails);
+        if (!post) return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
+        const returnData = {
+            text: post.text,
+            images: post.images,
+            creator: post._id
+        }
+
+        return res.json(returnData);
+
+    } catch (err) {
+        console.error(err);
+        return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
+    }
+})
+
 app.post("/events/create", authenticateToken, async (req: Request, res: Response) => {
     try {
         if (!req.token?.payload.data._id) throw new Error("User not found");
@@ -176,7 +202,7 @@ app.post("/events/create", authenticateToken, async (req: Request, res: Response
         if (!event) return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
         return res.json(event);
     } catch (err) {
-        // console.error(err);
+        console.error(err);
         return res.json({errorMessage: "An unknown error has occured", errorCode: 500});
     }
 })
