@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: space-between;
     width: 28%;
+    height: fit-content;
     padding-left:47.5%;
     margin-top: 20px;
 }
@@ -13,6 +14,177 @@
     border-radius: 10px;
     padding: 10px;
     background-color: #a5d6a7;
+}
+
+.displayPostImage {
+    width: 30%;
+    height: 30%;
+    margin-left: 12.5%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.Post {
+    width: 60vw;
+    margin-left: 20vw;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: start;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.displayPostText {
+    margin-top: 0px;
+    margin-left: 10px;
+    width: 100%;
+    font-size: 20px;
+}
+
+.displayPostAuthorUsername {
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.displayPostAuthorUsername:hover {
+    color: #a5d6a7;
+    cursor: pointer;
+}
+
+.displayPostAuthorId {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.displayPostButtons {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border: 0px solid black;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+}
+.displayPostButtons::after {
+    content:"";
+    height: 0px;
+    position: relative;
+    transform: translate(0, 14px);
+    width:100%;
+    bottom:1px;
+    z-index:-1;
+    box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.displayPostLikeCount {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.displayPostComments {
+    width: 77%;
+    margin-left: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+    margin-bottom: 25px;
+}
+
+.displayPostComment {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    border: 0px solid black;
+    border-radius: 10px;
+    padding: 1% 2% 2% 2%;
+    background-color: #a5d6a7;
+}
+
+.displayPostCommentAuthor {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 5px;
+}
+
+.displayPostCommentAuthorUsername {
+    display: inline;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0px;
+}
+
+.displayPostCommentAuthorId {
+    display: inline;
+    font-weight: bold;
+    margin-left: 5px;
+    margin: 0;
+    font-size: 16px;
+}
+
+.displayPostComment p {
+    margin: 0px;
+}
+
+.displayPostNewCommentContainer {
+    width: 100%;
+}
+
+.displayPostNewCommentErrorMessage {
+    margin: 0px;
+    margin-left: 5%;
+    margin-bottom: 5px;
+}
+
+.displayPostNewCommentText {
+    width: 78%;
+    margin-left: 10%;
+    margin-bottom: 25px;
+    resize: none;
+    border-radius: 10px;
+    padding: 1% 1% 1% 1%;
+}
+
+.displayPostButtons button {
+    width: 5%;
+    min-width: 85px;
+    background-color: #a5d6a7;
+    border: 0;
+    border-radius: 10px;
+}
+
+.displayPostNewCommentButton {
+    width: 20%;
+    min-width: 85px;
+    height: 25px;
+    margin-left: 70%;
+    margin-bottom: 25px;
+    background-color: #a5d6a7;
+    border: 0;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 800px) {
+    .displayPostNewCommentButton {
+        margin-left: 5%;
+    }
 }
 
 @media screen and (max-width: 768px) {

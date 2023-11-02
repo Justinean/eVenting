@@ -5,5 +5,5 @@
         "rootDir": "./",
         "outDir": "../build",
     },
-    "include": ["./models/*.ts"]
+    "include": ["./**/*.ts"]
 }

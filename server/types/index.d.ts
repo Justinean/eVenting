@@ -3,18 +3,12 @@
 type UserData = {
     username: string;
     id: string;
-    _id: string;
 }
 
 interface Token extends Object {
     header: {
         alg: string;
         typ: string;
-    };
-    payload: {
-        data: UserData;
-        iat: number;
-        exp: number;
     };
     signature?: string;
 }
@@ -25,11 +19,7 @@ type UserType = {
     password: string;
     bio?: string;
     id: string;
-    followedEvents?: EventType[];
-    followers?: string[];
-    following?: string[];
     profilePicture?: string;
-    _id?: string;
     isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
@@ -49,4 +39,8 @@ interface TokenType {
 interface PostType {
     text: string;
     images?: string[];
+}
+
+interface CommentType {
+    text: string;
 }

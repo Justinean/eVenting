@@ -2,7 +2,6 @@ import * as express from 'express';
 import { Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
-console.log(process.env.MONGODBURI);
 import * as mongoose from 'mongoose';
 import { UserModel, TokenModel } from './models';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from './utils/token';
@@ -29,7 +28,7 @@ app.post("/token", async (req: Request, res: Response) => {
         if (refreshToken == null) throw new Error("Token not sent");
         const token = await TokenModel.findOne({token: refreshToken});
         if (!token) throw new Error("Token not found");
-        res.json({accessToken: verifyRefreshToken(refreshToken)});
+        res.json({accessToken: await verifyRefreshToken(refreshToken)});
     } catch (err) {
         console.error(err);
         return res.sendStatus(403);
@@ -48,10 +47,9 @@ app.post("/signup", async (req: Request, res: Response) => {
 
         const user = await UserModel.create({...req.body, id: id.toString()});
         if (!user) return res.json({errorMessage: "Could not create user"});
-        console.log(user);
 
-        const accessToken = generateAccessToken(user.username, user.id, user._id);
-        const refreshToken = generateRefreshToken({username: user.username, id: user.id, _id: user._id});
+        const accessToken = await generateAccessToken({username: user.username, id: user.id, _id: user._id});
+        const refreshToken = await generateRefreshToken({username: user.username, id: user.id, _id: user._id});
         await TokenModel.create({token: refreshToken});
         return res.json({accessToken, refreshToken});
     } catch (err) {
@@ -74,8 +72,8 @@ app.post("/signin", async (req: Request, res: Response) => {
         const correctpw = user.isCorrectPassword(req.body.password);
         if (!correctpw) return res.json({errorMessage: "Incorrect username or password"});
     
-        const accessToken = generateAccessToken(user.username, user.id, user._id);
-        const refreshToken = generateRefreshToken({username: user.username, id: user.id, _id: user._id});
+        const accessToken = await generateAccessToken({username: user.username, id: user.id, _id: user._id});
+        const refreshToken = await generateRefreshToken({username: user.username, id: user.id, _id: user._id});
         await TokenModel.create({token: refreshToken});
         return res.json({accessToken, refreshToken});
     } catch (err) {
@@ -87,7 +85,7 @@ app.post("/signin", async (req: Request, res: Response) => {
 app.delete("/logout", async (req: Request, res: Response) => {
     const token = await TokenModel.deleteOne({token: req.body.token});
     if (!token) return res.sendStatus(403);
-    return res.sendStatus(204);
+    return res.json(token);
 })
 
 db.once('open', () => {

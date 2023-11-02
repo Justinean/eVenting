@@ -7,7 +7,7 @@ interface FetchDataType {
 
 class AuthService {
   // Obtains user data.
-  getProfile() {
+  getProfile(): TokenShape {
     return decode(this.getToken() as string);
   }
 
@@ -71,4 +71,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+export default (new AuthService() as AuthServiceType);

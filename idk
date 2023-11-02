@@ -4,6 +4,9 @@ project-root/
   │   └─ (compiled output files)
   ├─ src/ 
   |   ├─ models/
+  │   │   ├─ Comment.ts
+  │   │   ├─ Post.ts
+  │   │   ├─ Token.ts
   │   │   ├─ Event.ts
   │   │   ├─ index.ts
   │   │   └─ User.ts

@@ -24,15 +24,15 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [currentTab, setCurrentTab] = useState<string>(UserTabs[0]);
-    const visitor = document.URL.split("/")[document.URL.split("/").length - 1] === "me" ? false : true;
+    const visitor = document.URL.split("/")[document.URL.split("/").length - 1] === "me" || document.URL.split("/")[document.URL.split("/").length - 1] === AUTH.getProfile().data._id ? false : true;
     // const [loadingText, setLoadingText] = useState<string>("Loading...")
     useEffect(() => {
         const fetchData = async () => {
             let id = document.URL.split("/")[document.URL.split("/").length - 1];
-            if (id === "me") {
+            if (id === "me" || id === AUTH.getProfile().data._id) {
                 if (!AUTH.loggedIn()) window.location.assign("/signin");
                 if (AUTH.isTokenExpired()) await AUTH.refreshToken();
-                id = (AUTH as AuthServiceType).getProfile().data._id;
+                id = AUTH.getProfile().data._id;
             }
             const response = await fetch(`/api/profiles/${id}`, {method: "GET"});
             const data = await response.json();
@@ -41,6 +41,7 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
                 alert(data.errorMessage);
                 return window.location.assign("/");
             }
+            console.log(data);
             setProfileData(data);
             setLoading(false);
         }
@@ -56,7 +57,7 @@ const UserPages = ({tooSmall}: UserPagesProps) => {
     const getCurrentTab = () => {
         switch (currentTab) {
             case "Posts":
-                return <PostsTab></PostsTab>
+                return <PostsTab profileData={profileData as ProfileData} visitor={visitor}></PostsTab>
             case "Followed Events":
                 return <FollowedEventsTab></ FollowedEventsTab>
             case "Created Events":

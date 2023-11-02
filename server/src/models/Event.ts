@@ -44,4 +44,4 @@ const eventSchema = new Schema<BetterEventType>(
 
 const EventModel = model<BetterEventType>('Event', eventSchema);
 
-export {EventModel, eventSchema};
+export {EventModel, eventSchema, BetterEventType};

@@ -1,7 +1,14 @@
 import * as bcrypt from 'bcrypt';
 import { Schema, model } from "mongoose";
 
-const userSchema = new Schema<UserType>(
+interface BetterUserType extends UserType {
+    _id: Schema.Types.ObjectId;
+    followedEvents?: Schema.Types.ObjectId[];
+    followers?: Schema.Types.ObjectId[];
+    following?: Schema.Types.ObjectId[];
+}
+
+const userSchema = new Schema<BetterUserType>(
     {
         username: {
             type: String,
@@ -70,6 +77,6 @@ userSchema.methods.isCorrectPassword = async function (password: string) {
     return bcrypt.compare(password, this.password);
 };
 
-const UserModel = model<UserType>('User', userSchema);
+const UserModel = model<BetterUserType>('User', userSchema);
 
-export {UserModel, userSchema};
+export {UserModel, userSchema, BetterUserType};

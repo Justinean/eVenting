@@ -2,6 +2,7 @@ import "./Profile.css";
 import AUTH from "../../utils/auth";
 import { useEffect, useState, useContext } from "react";
 import { ColorsContext } from "../../Contexts";
+import { readFile } from "../../utils/fileReader";
 
 interface ProfileProps {
     profileData: ProfileData;
@@ -15,7 +16,8 @@ const Profile = ({profileData, visitor, tooSmall, setProfileData}: ProfileProps)
     const [editing, setEditing] = useState<boolean>(false);
     const [editUsernameValue, setEditUsernameValue] = useState<string>("");
     const [editBioValue, setEditBioValue] = useState<string>("");
-    const [editProfilePicture, setEditProfilePicture] = useState<string>("");
+    const [editProfilePicture, setEditProfilePicture] = useState<string | null>(null);
+    const [displayImage, setDisplayImage] = useState<string>("https://placehold.co/250.png");
     const [following, setFollowing] = useState<boolean>(false);
 
     const SaveEdits = async () => {
@@ -39,21 +41,21 @@ const Profile = ({profileData, visitor, tooSmall, setProfileData}: ProfileProps)
     useEffect(() => {
         setEditUsernameValue(profileData?.username || "");
         setEditBioValue(profileData?.bio || "");
-        setEditProfilePicture(profileData?.profilePicture || "");
         setFollowing(false)
+        setDisplayImage(profileData?.profilePicture || "");
         if (!AUTH.loggedIn()) return;
         setFollowing(profileData?.followers?.includes((AUTH as AuthServiceType)?.getProfile()?.data._id) || false);
     }, [profileData])
 
+    useEffect(() => {
+        setEditProfilePicture(displayImage);
+    }, [displayImage])
+
     const handleChangeImage = async () => {
         const file = await window.showOpenFilePicker({types: [{description: "Images", accept: {"image/*": [".png", ".jpg", ".jpeg"]}}], multiple: false, excludeAcceptAllOption: true});
         const fileContents = await file[0].getFile();
-        const reader = new FileReader();
-        reader.readAsDataURL(fileContents);
-        reader.onload = async () => {
-            console.log(reader.result)
-            setEditProfilePicture(reader.result as string);
-        }
+        const readableLink = await readFileHandler(fileContents)
+        setEditProfilePicture(readableLink);
     }
 
     const follow = async () => {
@@ -74,10 +76,18 @@ const Profile = ({profileData, visitor, tooSmall, setProfileData}: ProfileProps)
 
     }
 
+    const readFileHandler = async (file: File) => {
+        const readfile = await readFile(file)
+        if (!readfile) return "https://placehold.co/250";
+        setDisplayImage(readfile);
+        return readfile;
+    }
+
+
     return editing ? (
                     <div className="Profile" style={{backgroundColor: Colors.DarkGreen, color: Colors.Lavender}}>
                     <div style={{display: "flex", alignItems: "center"}}>
-                        <img className="HoverPointer" src={editProfilePicture.length === 0 ? "https://placehold.co/250" : editProfilePicture} alt="Profile Picture" style={{width: "75px", height: "75px", borderRadius: "50%", border: "5px solid black", marginLeft: tooSmall ? "0" : "5%", backgroundColor: "white"}} onClick={handleChangeImage}></img>
+                        <img className="HoverPointer" src={editProfilePicture === null ? "https://placehold.co/250" : editProfilePicture} alt="Profile Picture" style={{width: "75px", height: "75px", borderRadius: "50%", border: "5px solid black", marginLeft: tooSmall ? "0" : "5%", backgroundColor: "white"}} onClick={handleChangeImage}></img>
                         <div style={{ display: "flex", flexWrap: "wrap", height: "50%", width: `fit-content`, alignItems: "center", marginLeft: "10px"}}>
                             <input style={{display: "inline-block", width: `100%`, fontSize: "1.5em", fontWeight: "bold"}} value={editUsernameValue} onChange={e => editUsernameValue.length < 10 || e.target.value.length < editUsernameValue.length ? setEditUsernameValue(e.target.value) : window.alert("Character Limit is 10")}></input>
                             <h3 style={{display: "inline-block", margin: 0}}>#{profileData?.id}</h3>
@@ -104,7 +114,7 @@ const Profile = ({profileData, visitor, tooSmall, setProfileData}: ProfileProps)
                     {/* todo: add edit profile picture and picture storage */}
                 <div style={{display: "flex", justifyContent: visitor ? "space-between" : "flex-start", width: visitor ? "100%" : "75%"}}>
                     <div style={{display: "flex", alignItems: "center"}}>
-                        {profileData?.profilePicture != null ? <img src={profileData?.profilePicture} alt="Profile Picture" style={{width: "75px", height: "75px", borderRadius: "50%", border: "5px solid black", marginLeft: tooSmall ? "0" : "5%"}}></img> : <></>}
+                        {profileData?.profilePicture != null ? <img src={(displayImage as string)} alt="Profile Picture" style={{width: "75px", height: "75px", borderRadius: "50%", border: "5px solid black", marginLeft: tooSmall ? "0" : "5%"}}></img> : <></>}
                         <div style={{ display: "flex", flexDirection: "column", height: "50%", width: "100%", justifyContent: "center", marginLeft: "10px"}}>
                             <h2 style={{margin: 0}}>{profileData?.username}</h2>
                             <h3 style={{margin: 0}}>#{profileData?.id}</h3>

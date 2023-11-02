@@ -1,6 +1,6 @@
 .Header {
     display: flex;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     justify-content: space-between;

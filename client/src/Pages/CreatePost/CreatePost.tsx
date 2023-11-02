@@ -2,10 +2,12 @@ import { useContext, useState } from "react";
 import { ColorsContext } from "../../Contexts";
 import "./CreatePost.css"
 import AUTH from "../../utils/auth";
+import Compressor from 'compressorjs';
+import { readFile } from "../../utils/fileReader";
 
 const CreatePost = () => {
     const [postText, setPostText] = useState("");
-    const [postImages, setPostImages] = useState<string[]>([]);
+    const [postImages, setPostImages] = useState<Blob[] | File[]>([]);
     const [errorVisible, setErrorVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -27,8 +29,13 @@ const CreatePost = () => {
             setErrorMessage("Please fill the text box");
             return setErrorVisible(true);
         }
-        const body = {postText: postText, postImages: postImages};
-        
+        const tempImgs = [];
+        for (let i = 0; i < postImages.length; i++) {
+            tempImgs.push(await readFile(postImages[i] as File));
+        }
+        const body = {postText: postText, postImages: tempImgs as string[]};
+        console.log(tempImgs);
+        if (AUTH.isTokenExpired() && AUTH.loggedIn()) await AUTH.refreshToken();
         const response = await fetch("/api/posts/create", {
             method: "POST",
             headers: {
@@ -60,13 +67,15 @@ const CreatePost = () => {
         if (!file[0]) return;
         const fileContents = await file[0].getFile();
         if (!fileContents) return;
-        const reader = new FileReader();
-        reader.readAsDataURL(fileContents);
-        reader.onload = async () => {
-            console.log(reader.result)
-            setPostImages([...postImages, reader.result as string]);
-        }
+        new Compressor(fileContents, {
+            quality: .6,
+            success: async (result) => {
+            setPostImages([...postImages, result]);
+            }
+        })
     }
+
+    
 
     return (
         <div className="CreatePost">
@@ -80,10 +89,10 @@ const CreatePost = () => {
                     {postImages.map((image, index) => (
                         <div className="postImageContainer" key={index} style={{width: postImages.length > 1 ? "45%" : "90%", marginLeft: "2.5%", display: "inline-block"}}>
                             <button className="removeImageButton HoverPointer" onClick={() => setPostImages(postImages.filter((_, i) => i !== index))} style={{backgroundColor: Colors.Green}}>Remove</button>
-                            <img className="postImage" id={`postImage${index}`} src={image}></img>
+                            <img className="postImage" id={`postImage${index}`} src={URL.createObjectURL(image)}></img>
                         </ div>
                     ))}<br />
-                    <button className="addImageButton HoverPointer" onClick={() => postImages.length >= 4 ? null : handleChangeImage()} style={{backgroundColor: postImages.length >= 4 ? Colors.Blue : Colors.Green}}>Add Image</button><br />
+                    <button className="addImageButton HoverPointer" onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {postImages.length >= 4 ? e.preventDefault() : e.preventDefault(); handleChangeImage()}} style={{backgroundColor: postImages.length >= 4 ? Colors.Blue : Colors.Green}}>Add Image</button><br />
                     <p className="errorMessage" style={{color: Colors.Pink, fontSize: "20px", visibility: errorVisible ? "visible" : "hidden"}}>{errorMessage}</p>
                     <button className="postButton HoverPointer" style={{backgroundColor: Colors.Green}}>Post</button>
                 </form>

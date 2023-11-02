@@ -12,16 +12,13 @@ interface ProfileData {
 
 type UserType = {
     username: string;
-    email: string;
-    password: string;
-    bio?: string;
     id: string;
-    followedEvents?: EventType[];
-    followers?: UserType[];
-    following?: UserType[];
+    _id: string;
+    bio: string;
+    followedEvents: string[];
+    followers: string[];
+    following: string[];
     profilePicture?: string;
-    _id?: string;
-    isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
 type EventType = {
@@ -31,14 +28,41 @@ type EventType = {
     location: string;
     description: string;
     additional?: string;
+    creator: {
+        username: string;
+        id: string;
+    };
+    _id: string;
+}
+
+interface PostType {
+    text: string;
+    images: string[];
+    author: string;
+    _id: string;
+    comments: {
+        text: string;
+        author: {
+            username: string;
+            id: string;
+        };
+        likes: string[];
+        _id: string;
+    }[]
+    likes: string[];
+    reposts: string[];
+}
+
+interface CommentType {
+    text: string;
+    likes: string[];
+    _id: string;
 }
 
 interface TokenData {
-    data: {
-        username: string;
-        id: string;
-        _id: string;
-    }
+    username: string;
+    id: string;
+    _id: string;
 }
 
 interface TokenShape {
@@ -48,7 +72,7 @@ interface TokenShape {
 }
 
 interface AuthServiceType {
-    getProfile: () => TokenData;
+    getProfile: () => TokenShape;
     loggedIn: () => boolean;
     isTokenExpired: () => boolean;
     getToken: () => string;

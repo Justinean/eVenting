@@ -35,14 +35,14 @@ const Header = ({ headerHidden, setHeaderHidden, tooSmall, headerWidth, transiti
     }, 100)
 
     const logout = async () => {
-        AUTH.logout();
-        const response = await fetch("/api/users/logout", {
-            method: "POST",
+        const response = await fetch("/api/auth/logout", {
+            method: "DELETE",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({refreshToken: AUTH.getRefreshToken()})
+            body: JSON.stringify({token: AUTH.getRefreshToken()})
         });
         const data = await response.json();
         if (data.errorMessage) return window.alert(data.errorMessage);
+        AUTH.logout();
         window.location.assign("/");
     }
     return tooSmall ? (
